@@ -115,19 +115,28 @@ class TrackingProvider(LLMProvider):
 
 
 QUERIES = [
-    # Group 1: sqrt + addition (3 similar)
+    # Group 1: Math — sqrt + addition (3 similar)
     "What is the square root of 144 plus 12?",
     "What is the square root of 256 plus 20?",
     "What is the square root of 81 plus 5?",
-    # Group 2: search + compute (3 similar)
+    # Group 2: Physics — search + compute (3 similar)
     "Find the speed of light in m/s, then calculate how far light travels in 5 seconds.",
     "Find the speed of light in m/s, then calculate how far light travels in 10 seconds.",
     "Find the speed of light in m/s, then calculate how far light travels in 3 seconds.",
-    # Group 3: search + convert (2 similar)
-    "Find the distance from Earth to the Sun in km, then convert it to miles by dividing by 1.609.",
-    "Find the distance from Earth to the Sun in km, then convert it to meters by multiplying by 1000.",
-    # Group 4: unique
-    "Calculate 2 raised to the power of 10 then subtract 24.",
+    # Group 3: Finance — search rate + convert (3 similar)
+    "Look up the USD to EUR exchange rate, then convert $5,000 to euros.",
+    "Look up the USD to GBP exchange rate, then convert $5,000 to British pounds.",
+    "Look up the USD to JPY exchange rate, then convert $5,000 to Japanese yen.",
+    # Group 4: Health — search + compute totals (2 similar)
+    "Find the calories in a banana and in an egg. If I eat 3 bananas and 2 eggs, how many total calories is that?",
+    "Find the calories in a banana and in rice. If I eat 2 bananas and 1 cup of rice, how many total calories is that?",
+    # Group 5: Unit conversion (3 similar)
+    "Find how many miles are in a kilometer, then convert a 42.195 km marathon to miles.",
+    "Find how many pounds are in a kilogram, then convert 75 kg to pounds.",
+    "Find how many liters are in a gallon, then convert 10 gallons to liters.",
+    # Group 6: Everyday — search + compute (2 similar)
+    "Find the US minimum wage, then calculate the weekly earnings for a 40-hour work week before tax.",
+    "Find the US minimum wage, then calculate the annual earnings for a 40-hour work week over 52 weeks.",
 ]
 
 
