@@ -176,14 +176,8 @@ registry.register(MyTool())
 
 ## Reference
 
-```
-@article{apc2025,
-  title={Agentic Plan Caching},
-  year={2025},
-  eprint={2506.14852},
-  archivePrefix={arXiv},
-}
-```
+> **Agentic Plan Caching**, arXiv:2506.14852, 2025.
+> [https://arxiv.org/abs/2506.14852](https://arxiv.org/abs/2506.14852)
 
 ## License
 
