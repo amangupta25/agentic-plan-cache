@@ -105,7 +105,7 @@ print(agent.stats.hit_rate) # 0.5
 # Benchmark — APC vs no-cache baseline on 6 queries
 .venv/bin/python demo/benchmark.py
 
-# Multi-step workflows — 11 queries with chained search + compute (2-5 steps each)
+# Multi-step workflows — 23 queries across 9 domains (physics, finance, health, geography, ...)
 .venv/bin/python demo/multistep_benchmark.py
 
 # Cost analysis — tracks actual tokens and computes dollar costs across model pairs
@@ -123,32 +123,42 @@ Expensive call reduction        :  67%
 APC hit rate                    :  33%
 ```
 
-**Multi-step workflows** (11 queries, 2-5 step chains of `web_search` + `calculator`):
+**Multi-step workflows** (23 queries across 9 domains — physics, geography, finance, health, unit conversion, gold pricing, wages, and math):
 
 ```
-Expensive LLM calls (baseline) :   22
-Expensive LLM calls (APC)      :    7
-Expensive call reduction        :  68%
-APC hit rate                    :  36%
+Expensive LLM calls (baseline) :   46
+Expensive LLM calls (APC)      :   13
+Expensive call reduction        :  72%
+APC hit rate                    :  43%
+Unique keywords                 :  13
 ```
 
 On cache hits, the interleaved loop adapts each step with prior results as context:
 
 ```
-Q2:  2 steps → 1 keyword + 2 adapt + 1 synthesis = 4 cheap LLM calls
-Q8:  3 steps → 1 keyword + 3 adapt + 1 synthesis = 5 cheap LLM calls
+Q 2: 2 steps → 1 keyword + 2 adapt + 1 synthesis = 4 cheap LLM calls
+Q 5: 3 steps → 1 keyword + 3 adapt + 1 synthesis = 5 cheap LLM calls
+```
+
+Keywords cluster naturally by domain:
+
+```
+"currency conversion"  → Q6, Q7, Q8  (2 hits)
+"population comparison" → Q4, Q5     (1 hit)
+"calorie calculation"  → Q9, Q10    (1 hit)
+"square root addition" → Q20, Q21, Q22 (2 hits)
 ```
 
 ### Cost Analysis
 
-APC uses ~2x the total tokens (more cheap LLM calls), but shifts 80% of them to a model that's 5-17x cheaper per token. Net result across model pairs:
+APC uses ~2x the total tokens (more cheap LLM calls), but shifts 80% of them to a model that's 5-17x cheaper per token. Net result across model pairs (16 queries, 6 domains):
 
 | Expensive / Cheap | Baseline | APC | Savings |
 |---|---|---|---|
-| gpt-4o / gpt-4o-mini | $0.024 | $0.012 | **50%** |
-| gpt-4.1 / gpt-4.1-mini | $0.019 | $0.013 | **30%** |
-| gpt-4.1 / gpt-4.1-nano | $0.019 | $0.009 | **51%** |
-| claude-sonnet-4.6 / claude-haiku-4.5 | $0.033 | $0.029 | **12%** |
+| gpt-4o / gpt-4o-mini | $0.047 | $0.023 | **52%** |
+| gpt-4.1 / gpt-4.1-mini | $0.038 | $0.026 | **32%** |
+| gpt-4.1 / gpt-4.1-nano | $0.038 | $0.018 | **53%** |
+| claude-sonnet-4.6 / claude-haiku-4.5 | $0.065 | $0.056 | **14%** |
 
 Savings scale with the price gap between models. Wider gap = more savings.
 
