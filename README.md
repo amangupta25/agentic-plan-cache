@@ -104,9 +104,17 @@ print(agent.stats.hit_rate) # 0.5
 
 # Benchmark — APC vs no-cache baseline on 6 queries
 .venv/bin/python demo/benchmark.py
+
+# Multi-step workflows — 11 queries with chained search + compute (2-5 steps each)
+.venv/bin/python demo/multistep_benchmark.py
+
+# Cost analysis — tracks actual tokens and computes dollar costs across model pairs
+.venv/bin/python demo/cost_benchmark.py
 ```
 
-Sample benchmark output:
+### Benchmark Results
+
+**Basic benchmark** (6 queries, simple math):
 
 ```
 Expensive LLM calls (baseline) :   12
@@ -114,6 +122,35 @@ Expensive LLM calls (APC)      :    4
 Expensive call reduction        :  67%
 APC hit rate                    :  33%
 ```
+
+**Multi-step workflows** (11 queries, 2-5 step chains of `web_search` + `calculator`):
+
+```
+Expensive LLM calls (baseline) :   22
+Expensive LLM calls (APC)      :    7
+Expensive call reduction        :  68%
+APC hit rate                    :  36%
+```
+
+On cache hits, the interleaved loop adapts each step with prior results as context:
+
+```
+Q2:  2 steps → 1 keyword + 2 adapt + 1 synthesis = 4 cheap LLM calls
+Q8:  3 steps → 1 keyword + 3 adapt + 1 synthesis = 5 cheap LLM calls
+```
+
+### Cost Analysis
+
+APC uses ~2x the total tokens (more cheap LLM calls), but shifts 80% of them to a model that's 5-17x cheaper per token. Net result across model pairs:
+
+| Expensive / Cheap | Baseline | APC | Savings |
+|---|---|---|---|
+| gpt-4o / gpt-4o-mini | $0.024 | $0.012 | **50%** |
+| gpt-4.1 / gpt-4.1-mini | $0.019 | $0.013 | **30%** |
+| gpt-4.1 / gpt-4.1-nano | $0.019 | $0.009 | **51%** |
+| claude-sonnet-4.6 / claude-haiku-4.5 | $0.033 | $0.029 | **12%** |
+
+Savings scale with the price gap between models. Wider gap = more savings.
 
 ## Tests
 
